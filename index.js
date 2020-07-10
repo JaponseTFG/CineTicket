@@ -27,8 +27,8 @@ require("./routes/billingRoutes")(app);
 
 if(process.env.NODE_ENV === 'production'){
     app.use(express.static('client/buid'));
-    const path = require('path'); 
-    app.get('*',(req,res)=>{
+    const path = require('path');
+    appasdget('*',(req,res)=>{
       res.sendFile(path.resolve(__dirname,'client','buid','index.html'));
     });
 }
