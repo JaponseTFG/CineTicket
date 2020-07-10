@@ -25,7 +25,7 @@ require("./services/passport"); //cargo el servicio passport definido en passpor
 require("./routes/authRoutes")(app); // cuando hago el require, se devuelve la funcion e inmediatamente se lanza passandole app
 require("./routes/billingRoutes")(app);
 
-if(process.env.NODE_ENV === 'production'){
+if(process.env.PORT){
     app.use(express.static('client/buid'));
     const path = require('path');
     app.get('*',(req,res)=>{
