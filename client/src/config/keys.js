@@ -1,0 +1,1 @@
+export default {stripePublic: 'pk_test_51H2iUmBLLrEOZ9PHBWgficH0cD79sciUs4WDB53IEdz7B1RWdfdlfn8sJSOvCIXGtAr3maEeERpdSVQxURYJ0Bcw00tUDMZcVs'};

@@ -3,6 +3,7 @@ import { Component } from "react";
 import { connect } from "react-redux";
 import ReactStripeCheckout from "react-stripe-checkout";
 import * as actions from '../actions';
+import keys from "../config/keys";
 
 class Payments extends Component {
 
@@ -20,7 +21,7 @@ class Payments extends Component {
         allowRememberMe
         panelLabel="Total: "
         currency="EUR"
-        stripeKey={process.env.REACT_APP_STRIPE_KEY}
+        stripeKey={keys.stripePublic}
 
         token={(token) =>  {token.amount=this.amount;return this.props.handleToken(token)}}
       >
