@@ -21,9 +21,12 @@ app.use(passport.session());
 
 //Load models
 require("./models/User");
+require("./models/Survey");
+
 require("./services/passport"); //cargo el servicio passport definido en passport js
-require("./routes/authRoutes")(app); // cuando hago el require, se devuelve la funcion e inmediatamente se lanza passandole app
-require("./routes/billingRoutes")(app);
+require("./routes/user/authRoutes")(app); // cuando hago el require, se devuelve la funcion e inmediatamente se lanza passandole app
+require("./routes/user/billingRoutes")(app);
+require("./routes/user/surveyRoutes")(app);
 
 if(process.env.PORT){
     app.use(express.static('client/build'));

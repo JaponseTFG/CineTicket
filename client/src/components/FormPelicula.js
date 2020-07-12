@@ -1,8 +1,18 @@
 import React from "react";
 import { Component } from "react";
+import { connect } from "react-redux";
 import M from 'materialize-css';
+import * as actions from '../actions';
 
-class Landing extends Component {
+class FormPelicula extends Component {
+  constructor(props){
+    super(props);
+    if(this.props.pelicula){
+      this.pelicula = this.props.pelicula;
+    }else{
+      this.pelicula = {titulo:null,descripcion:null}
+    };
+  }
   componentDidMount(){
     document.addEventListener('DOMContentLoaded', function() {
         var elems = document.querySelectorAll('.fixed-action-btn');
@@ -11,7 +21,10 @@ class Landing extends Component {
           hoverEnabled: false
         });
       });
+      console.log(this.nombrePelicula);
+      console.log(this.descripcionPelicula);
   }
+
   LeftPanel() {
     return (
       <div className="card-panel col s12 m4  brown lighten-5"  style={{ position:"relative", minHeight:"300px"}}>
@@ -36,32 +49,47 @@ class Landing extends Component {
     return (
       <div className="col s12 m6 l4">
         <div className="input-field col s12 m12 ">
-            <input id="film_name" type="text" />
-            <label htmlFor ="film_name">Nombre de la película</label>
+            <input id="film_name" value={this.pelicula.titulo} type="text" />
+            <label htmlFor ="film_name">Titulo</label>
         </div>
         <div className="input-field col s12 m12 ">
-            <textarea id="txt_sinopsis" className="materialize-textarea"></textarea>
+            <textarea id="txt_sinopsis" className="materialize-textarea">{this.pelicula.descrupcion}</textarea>
             <label htmlFor ="txt_sinopsis">Sinopsis</label>
         </div>
       </div>
     );
   }
+
+
+  onSubmit(event){
+    event.preventDefault();
+    if(!event.which)
+      this.props.submitPelicula();
+  }
+
+
   render() {
     return (
-            <div className="row">
-              <div className="col   l1"></div>
-              {this.LeftPanel()}
-              <div className="col   l1"></div>
-              {this.RightPanel()}
-              <div className="col   l1"></div>
-              <div className="col  m1 s12 hide-on-med-and-down" >
-                <a className="btn-floating btn-large right blue-grey darken-1">
-                  <i className="material-icons">save</i>
-                </a>
+            <form onSubmit={this.onSubmit}>
+              <div className="row">
+                <div className="col  l1"></div>
+                {this.LeftPanel()}
+                <div className="col  l1"></div>
+                {this.RightPanel()}
+                <div className="col  l1"></div>
+                <div className="col  m1 s12 hide-on-med-and-down" >
+                  <button onClick={this.preventDefault} className="btn-floating btn-large right blue-grey darken-1">
+                    <i className="material-icons">save</i>
+                  </button>
+                </div>
               </div>
-            </div>
+            </form>
     );
   }
 }
 
-export default Landing;
+function mapStateToProps(state) {
+  return { waiting : state.peli.waiting, pelicula: state.peli.datosPelicula, };
+}
+
+export default connect(mapStateToProps)(FormPelicula);

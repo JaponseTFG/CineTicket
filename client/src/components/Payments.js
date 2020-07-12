@@ -6,15 +6,17 @@ import * as actions from '../actions';
 import keys from "../config/keys";
 
 class Payments extends Component {
-
-  amount= 1000;
+  constructor(props) {
+    super(props);
+    this.amount = 1000;
+  }
 
   render() {
 
     return (
       <ReactStripeCheckout
         name="cineticket"
-        email="balblabla@gmail.com"
+        email={this.props.email}
         description="Compra tus entradas"
         image="https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcRks8tpvWNATSuCgs00MauzIIWAAh7BNba4wQ&usqp=CAU"
         amount={this.amount}

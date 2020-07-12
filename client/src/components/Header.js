@@ -18,11 +18,11 @@ class Header extends Component {
       default:
         return (
           <React.Fragment>
-            <li style={{marginRight:'20px'}}>
-              Credits: {this.props.paym}
+            <li style={{ marginRight: "20px" }}>
+              Credits: {this.props.paym.waiting || this.props.paym.credits}
             </li>
             <li>
-              <Payments/>
+              <Payments email={this.props.auth.email} />
             </li>
             <li>
               <a href="/api/logout">Logout</a>
@@ -35,14 +35,20 @@ class Header extends Component {
   render() {
     return (
       <nav>
-        <div className="nav-wrapper blue-grey darken-1">
-          <Link
-            to={this.props.auth ? "/surveys" : "/"}
-            className="left brand-logo"
-          >
-            CineTicket
-          </Link>
-          <ul className="right hide-on-med-and-down">{this.renderContent()}</ul>
+        <div className="nav-wrapper" style={{backgroundColor : "#523f5c"}}>
+          <div className="row">
+            <div className="col s1 m1 "></div>
+            <div className="col s1 m1"><Link
+              to={this.props.auth ? "/surveys" : "/"}
+              className="left brand-logo"
+            >
+              CineTicket
+            </Link></div>
+                <div className="col s10 m10">
+                <ul className="right">{this.renderContent()}</ul>
+                </div>
+          </div>
+
         </div>
       </nav>
     );
@@ -50,7 +56,7 @@ class Header extends Component {
 }
 
 function mapStateToProps(state) {
-  return { auth: state.auth ,paym : state.paym};
+  return { auth: state.auth, paym: state.paym };
 }
 
 export default connect(mapStateToProps)(Header);
