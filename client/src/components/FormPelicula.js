@@ -1,95 +1,151 @@
 import React from "react";
 import { Component } from "react";
 import { connect } from "react-redux";
-import M from 'materialize-css';
-import * as actions from '../actions';
+import * as actions from "../actions";
+import M from "materialize-css";
+import Dropzone from "./Dropzone";
+import Waiting from "./Waiting";
+import axios from "axios";
 
 class FormPelicula extends Component {
-  constructor(props){
+  constructor(props) {
     super(props);
-    if(this.props.pelicula){
-      this.pelicula = this.props.pelicula;
-    }else{
-      this.pelicula = {titulo:null,descripcion:null}
-    };
+
+    if (this.props.pelicula) {
+      this.state = {
+        titulo: this.props.pelicula.titulo,
+        descripcion: this.props.pelicula.descripcions,
+      };
+    } else {
+      this.state = { titulo: "", descripcion: "" ,selectedFile:"",waiting:false};
+    }
+
+    this.handleChange = this.handleChange.bind(this);
+    this.onSubmit = this.onSubmit.bind(this);
+    this.onChangeHandler= this.onChangeHandler.bind(this);
   }
-  componentDidMount(){
-    document.addEventListener('DOMContentLoaded', function() {
-        var elems = document.querySelectorAll('.fixed-action-btn');
-        var instances = M.FloatingActionButton.init(elems, {
-          direction: 'bottom',
-          hoverEnabled: false
-        });
+
+  componentDidMount() {
+    document.addEventListener("DOMContentLoaded", function () {
+      var elems = document.querySelectorAll(".fixed-action-btn");
+      var instances = M.FloatingActionButton.init(elems, {
+        direction: "bottom",
+        hoverEnabled: false,
       });
-      console.log(this.nombrePelicula);
-      console.log(this.descripcionPelicula);
+    });
   }
 
-  LeftPanel() {
-    return (
-      <div className="card-panel col s12 m4  brown lighten-5"  style={{ position:"relative", minHeight:"300px"}}>
-
-      <div className="fixed-action-btn" style={{ position: "absolute", display: "inline-block", top: "10px" }}>
-      <a className="btn-floating" style={{ backgroundColor:"#6d547a"}}>
-        <i className="large material-icons">mode_edit</i>
-      </a>
-      <ul>
-        <li><a className="btn-floating btn-small red"><i className="material-icons">insert_chart</i></a></li>
-        <li><a className="btn-floating btn-small yellow darken-1"><i className="material-icons">format_quote</i></a></li>
-        <li><a className="btn-floating btn-small green"><i className="material-icons">publish</i></a></li>
-        <li><a className="btn-floating btn-small blue"><i className="material-icons">attach_file</i></a></li>
-      </ul>
-      </div>
-
-
-      </div>
-    );
-  }
-  RightPanel() {
-    return (
-      <div className="col s12 m6 l4">
-        <div className="input-field col s12 m12 ">
-            <input id="film_name" value={this.pelicula.titulo} type="text" />
-            <label htmlFor ="film_name">Titulo</label>
-        </div>
-        <div className="input-field col s12 m12 ">
-            <textarea id="txt_sinopsis" className="materialize-textarea">{this.pelicula.descrupcion}</textarea>
-            <label htmlFor ="txt_sinopsis">Sinopsis</label>
-        </div>
-      </div>
-    );
+  handleChange(event) {
+    this.setState({ [event.target.name]: event.target.value });
   }
 
+  async onSubmit(event) {
+    try{
+      event.preventDefault();
+      if (!event.which) {
+        this.setState({ waiting: true });
+        delete this.state.waiting;
 
-  onSubmit(event){
+        const data = new FormData();
+        data.append('file', this.state.selectedFile);
+        console.log("sending",data);
+        const res = await axios.post("/api/admin/upload", data);
+        console.log("sended",res);
+
+
+        //const res = await axios.post("/api/admin/editPelicul", this.selectedFile);
+        this.setState({ waiting: false });
+      }
+    }
+    catch(err)
+    {
+        console.log("error",err);
+    }
+  }
+
+  onChangeHandler(event){
+    this.setState({fileimagen:event.target.files[0]});
+    this.state.selectedFile = event.target.files[0];
     event.preventDefault();
-    if(!event.which)
-      this.props.submitPelicula();
   }
 
+  toggleSaveLoading(waiting) {
+    console.log("ESOOOOOOOOO",waiting);
+    if (waiting) {
+      return (
+              <React.Fragment>
+                <div className="col  m1 s12 hide-on-med-and-down">
+                    <Waiting />
+                </div>
+                <div className="fixed-action-btn hide-on-large-only">
+                  <Waiting />
+                </div>
+              </React.Fragment>
+              );
+    } else {
+      return (
+        <React.Fragment>
+          <div className="col  m1 s12 hide-on-med-and-down">
+              <button onClick={this.preventDefault} className="btn-floating btn-large right blue-grey darken-1">
+                <i className="material-icons">save</i>
+              </button>
+          </div>
+
+        <div className="fixed-action-btn">
+          <button className="btn-floating btn-large hide-on-large-only blue-grey darken-1" >
+            <i className="large material-icons">save</i>
+          </button>
+        </div>
+
+        </React.Fragment>
+      );
+    }
+  }
 
   render() {
     return (
-            <form onSubmit={this.onSubmit}>
-              <div className="row">
-                <div className="col  l1"></div>
-                {this.LeftPanel()}
-                <div className="col  l1"></div>
-                {this.RightPanel()}
-                <div className="col  l1"></div>
-                <div className="col  m1 s12 hide-on-med-and-down" >
-                  <button onClick={this.preventDefault} className="btn-floating btn-large right blue-grey darken-1">
-                    <i className="material-icons">save</i>
-                  </button>
-                </div>
-              </div>
-            </form>
+      <form onSubmit={this.onSubmit}>
+        <div className="row">
+          <div className="col  l1"></div>
+          <Dropzone/>
+          
+
+          <div className="col  l1"></div>
+          <div className="col s12 m6 l4">
+            <div className="input-field col s12 m12 ">
+              <input
+                id="film_name"
+                name="titulo"
+                onChange={this.handleChange}
+                value={this.state.titulo}
+                type="text"
+              />
+              <label htmlFor="film_name">Titulo</label>
+            </div>
+            <div className="input-field col s12 m12 ">
+              <textarea
+                id="txt_sinopsis"
+                name="descripcion"
+                onChange={this.handleChange}
+                value={this.state.descripcion}
+                className="materialize-textarea"
+              ></textarea>
+              <label htmlFor="txt_sinopsis">Sinopsis</label>
+            </div>
+          </div>
+          <div className="col  l1"></div>
+
+            {this.toggleSaveLoading(this.state.waiting)}
+
+        </div>
+
+      </form>
     );
   }
 }
 
 function mapStateToProps(state) {
-  return { waiting : state.peli.waiting, pelicula: state.peli.datosPelicula, };
+  return { waiting: state.peli.waiting };
 }
 
-export default connect(mapStateToProps)(FormPelicula);
+export default connect(mapStateToProps, actions)(FormPelicula);

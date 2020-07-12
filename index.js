@@ -2,6 +2,7 @@ const express = require("express"); //(Common JS)//import express from 'express'
 const mongoose = require("mongoose");
 const cookieSession = require("cookie-session");
 const passport = require("passport");
+
 const keys = require("./config/keys");
 
 mongoose.connect(keys.mongoURI);
@@ -22,11 +23,13 @@ app.use(passport.session());
 //Load models
 require("./models/User");
 require("./models/Survey");
+require("./models/Pelicula");
 
 require("./services/passport"); //cargo el servicio passport definido en passport js
-require("./routes/user/authRoutes")(app); // cuando hago el require, se devuelve la funcion e inmediatamente se lanza passandole app
-require("./routes/user/billingRoutes")(app);
-require("./routes/user/surveyRoutes")(app);
+require("./routes/authRoutes")(app); // cuando hago el require, se devuelve la funcion e inmediatamente se lanza passandole app
+require("./routes/billingRoutes")(app);
+require("./routes/surveyRoutes")(app);
+require("./routes/editorRoutes")(app);
 
 if(process.env.PORT){
     app.use(express.static('client/build'));
