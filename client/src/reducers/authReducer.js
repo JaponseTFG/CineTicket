@@ -1,9 +1,11 @@
-import { FETCH_USER } from '../actions/types';
+import { GET_AUTH } from '../actions/types';
 
-export default function (state = null, action) {
+const defaultState = null;
+
+export default function (state = defaultState, action) {
   switch (action.type)
   {
-    case FETCH_USER:
+    case GET_AUTH:
       return action.payload || false;
     default:
       return state;

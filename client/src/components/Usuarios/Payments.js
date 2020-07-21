@@ -2,8 +2,8 @@ import React from "react";
 import { Component } from "react";
 import { connect } from "react-redux";
 import ReactStripeCheckout from "react-stripe-checkout";
-import * as actions from '../actions';
-import keys from "../config/keys";
+import * as actions from '../../actions';
+import keys from "../../config/keys";
 
 class Payments extends Component {
   constructor(props) {

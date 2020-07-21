@@ -1,14 +1,16 @@
 import { FETCH_PAYMENT } from '../actions/types';
-import { FETCH_USER } from '../actions/types';
+import { GET_AUTH } from '../actions/types';
 
-export default function (state, action) {
+const defaultState = {waiting:false, credits: 0};
+
+export default function (state = defaultState, action) {
   switch (action.type)
   {
     case FETCH_PAYMENT:
       return {waiting:action.payload.waiting||false, credits:action.payload.credits||state.credits};
-    case FETCH_USER:
+    case GET_AUTH:
       return {waiting:false, credits:action.payload.credits|| 0};
     default:
-      return {waiting:false, credits: 0};
+      return state;
   }
 }
