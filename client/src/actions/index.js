@@ -46,7 +46,6 @@ export const loadCartelera = () => {
     try {
       const res = await axios.get("/api/listaPeliculasCartelera");
       if (res.data) {
-        console.log("res",res.data);
         dispatch({ type: LOAD_CARTELERA, payload: res.data });
       }else{
         showError("Parece que ha habido un problema con la solicitud, vueva a intentarlo.");
@@ -88,7 +87,46 @@ export const targetSesiones = (fecha, id_pelicula) => {
   };
 }
 
+export const loadSalaReserva = (id_sesion) => {
+  return async (dispatch) => {
+    try{
+      const res = await axios.get("/api/butacasSesion?id="+id_sesion, {responseType: 'json'});
+      console.log(res);
+      if(res.data){
+        dispatch({ type: LOAD_SALA_RESERVA, payload: res.data });
+      }else{
+        dispatch({ type: LOAD_SALA_RESERVA, payload: false });
+        showError("Parece que ha habido un problema con la solicitud, vueva a intentarlo.");
+      }
+    }catch(err){
+      console.log(err);
+      showError("Parece que ha habido un problema con la solicitud, vueva a intentarlo.");
+    }
 
+  };
+}
+
+export const targetButaca = (id_butaca, index) => {
+  return async (dispatch) => {
+    try {
+      dispatch({ type: ACTUALIZA_BUTACA_RESERVA, payload: {estado : "comprobando", index : index} });
+      const res = await axios.post("/api/targetButaca", { _id : id_butaca });
+      if(res.data){
+        if(res.data.success){
+          dispatch({ type: ACTUALIZA_BUTACA_RESERVA, payload: {estado : res.data.estado, index : index} });
+        }else{
+          showError("El número máximo de butacas reservadas es de 6. Si desea más entradas debe procesar sus reservas.");
+          dispatch({ type: ACTUALIZA_BUTACA_RESERVA, payload: {estado : res.data.estado, index : index} });
+        }
+      }else{
+        showError("Parece que ha habido un problema con la solicitud, vueva a intentarlo.");
+      }
+    } catch (err) {
+      console.log(err);
+      showError("Parece que ha habido un problema con la solicitud, vueva a intentarlo.");
+    }
+  };
+}
 
 ////ADMIN SESIONES
 export const loadListaSesiones = () => {
@@ -314,15 +352,14 @@ export const getAuth = () => {
 export const handleToken = (token) => {
   return async (dispatch) => {
     try {
-      dispatch({ type: FETCH_PAYMENT, payload: { waiting: "procesando" } });
-      const test = await axios.post("/api/surveys", {
-        emailDestinatario: "javi.btk@gmail.com",
-      });
       const res = await axios.post("/api/stripe", token);
-      dispatch({ type: FETCH_PAYMENT, payload: { credits: res.data.credits } });
+      if(res.data)
+        dispatch({ type: SUBMIT_RESERVA, payload: res.data });
+      else
+        showError("Ha habido un problema durante el pago. Vuelva a intentarlo tras unos minutos.");
     } catch (err) {
       console.log(err);
-      dispatch({ type: FETCH_PAYMENT, payload: {} });
+      showError("Ha habido un problema durante el pago. Vuelva a intentarlo tras unos minutos.");
     }
   };
 };
@@ -439,13 +476,13 @@ export const showError = (message) => {
 
 export const showInfo = (message) => {
   M.Toast.dismissAll();
-  setTimeout(function(){
-    M.toast({
-      html: message+"<p class='hide-on-med-and-up'>&nbsp</p>",
-      classes: "right indigo darken-1",
-      displayLength: 5000,
-    });
-  }, 500);
+
+  M.toast({
+    html: message+"<p class='hide-on-med-and-up'>&nbsp</p>",
+    classes: "right teal lighten-1",
+    displayLength: 2000,
+  });
+
 
 };
 

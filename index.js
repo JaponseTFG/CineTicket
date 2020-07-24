@@ -29,6 +29,7 @@ require("./models/Sala");
 require("./models/Sesion");
 require("./models/Butaca");
 require("./models/Reserva");
+require("./models/Entrada");
 
 require("./services/passport"); //cargo el servicio passport definido en passport js
 require("./routes/authRoutes")(app); // cuando hago el require, se devuelve la funcion e inmediatamente se lanza passandole app

@@ -8,29 +8,6 @@ import * as actions from "../../actions";
 import M from "materialize-css";
 import Waiting from "../Waiting"
 
-const Pelicula = (props)=>{
-  return(
-    <div key={props.index} className="col s12 m12 l6 xl4">
-      <div className="card grey  lighten-5">
-        <div className="card-image " >
-            <img src={props.pelicula.src_imagen} ></img>
-          <Link to={"/admin/peliculas-edit"} onClick={() => this.gotoEditPelicula(props.index)}className="btn-floating  btn-large halfway-fab  deep-purple lighten-2">
-            <i className="material-icons">confirmation_number</i>
-          </Link>
-
-        </div>
-        <div className="card-content activator">
-          <span className="card-title truncate activator"><b>{props.pelicula.titulo}</b></span>
-          <p className="truncate activator" style={{paddingTop:"1%"}}>{props.pelicula.descripcion}</p>
-        </div>
-        <div className="card-reveal">
-          <span className="card-title grey-text text-darken-4"><b>{props.pelicula.titulo}</b><i className="material-icons right">close</i></span>
-          <p>{props.pelicula.descripcion}</p>
-        </div>
-      </div>
-    </div>
-  );
-}
 
 const DatePicker = (props) => {
   return(
@@ -43,20 +20,34 @@ const DatePicker = (props) => {
 
 const BotonTargetSesion = (props) => {
   var fecha = new Date(props.sesion.fecha);
-  return (
-    <React.Fragment>
-      <Link to={"/"} onClick={() => props.onClick(null)} className="btn">
-        {fecha.toLocaleTimeString("es-ES", {hour: '2-digit', minute: '2-digit'})}
-      </Link>
-      &nbsp;
-    </React.Fragment>
-  )
+
+  if(props.logged){
+    return (
+      <React.Fragment>
+        <Link to={"/sala-reservas"} onClick={() => props.onClick(props.index)} className="btn">
+          {fecha.toLocaleTimeString("es-ES", {hour: '2-digit', minute: '2-digit'})}
+        </Link>
+        &nbsp;
+      </React.Fragment>
+    )
+  }
+  else{
+    return (
+      <React.Fragment>
+        <button onClick={() => props.onClick(props.toast())} className="btn">
+          {fecha.toLocaleTimeString("es-ES", {hour: '2-digit', minute: '2-digit'})}
+        </button>
+        &nbsp;
+      </React.Fragment>
+    )
+  }
 };
 
 class PeliculaInfo extends Component {
 
   constructor(props) {
     super(props);
+    this.seleccionaSesion = this.seleccionaSesion.bind(this);
   }
 
   componentDidMount(){
@@ -87,18 +78,27 @@ class PeliculaInfo extends Component {
     this.props.targetSesiones(fecha,this.props.pelicula._id);
   }
 
-  targetSesion(index){
-    console.log(index);
+  seleccionaSesion(index){
+    this.props.targetSesion(index);
   }
 
+  toastInfoLogin(){
+    M.Toast.dismissAll();
+    M.toast({
+      html: "Debes iniciar sesión para reservar entradas <p class='hide-on-med-and-up'>&nbsp</p>",
+      classes: "right teal lighten-1",
+      displayLength: 3000,
+    });
+  };
+
   showSesiones(){
-    console.log("ses",this.props.sesiones);
     if(this.props.sesiones){
       return this.props.sesiones.map((sesion,index)=>{
-        return <BotonTargetSesion key={"s"+index} sesion={sesion} index={index} onClick={this.targetSesion}/>
+        return <BotonTargetSesion key={"s"+index} sesion={sesion} index={index} onClick={this.seleccionaSesion} logged={this.props.auth} toast={this.toastInfoLogin}/>
       });
     }
   }
+
 
   render(){
     if(this.props.pelicula == null)
@@ -125,7 +125,7 @@ class PeliculaInfo extends Component {
                 <h5>Elige tu sesión</h5>
                 <div className="divider"></div>
                 <div className="section" >
-                  <DatePicker input_name="target_sesion" label="Elige un día"/>
+                  <DatePicker input_name="target_sesion" label="Día"/>
                 </div>
                 <div className="section" style={{paddingLeft:"2%",paddingRight:"2%"}}>
                   {this.showSesiones()}
@@ -140,7 +140,7 @@ class PeliculaInfo extends Component {
 
 
 function mapStateToProps(state) {
-  return { pelicula:state.reserva.pelicula, sesiones: state.reserva.sesiones };
+  return { pelicula:state.reserva.pelicula, sesiones: state.reserva.sesiones ,  auth: state.auth};
 }
 
 export default connect(mapStateToProps, actions)(PeliculaInfo);

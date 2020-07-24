@@ -17,7 +17,6 @@ class Header extends Component {
   }
 
   render() {
-    console.log("refreshed");
     return (
       <nav>
         <div className="nav-wrapper" style={{backgroundColor : "#523f5c"}}>

@@ -42,6 +42,15 @@ const TimePicker = (props) => {
   )
 };
 
+const InputPrecio = (props) => {
+  return (
+    <div className="input-field col s12  l4 ">
+      <input id="precio_sesion" onChange={props.onChange}  placeholder="€" value={props.precio} name={props.input_name} type="text"/>
+      <label htmlFor="precio_sesion" >{props.label}</label>
+    </div>
+  )
+};
+
 const SubmitSesion = (props) => {
   return(
     <React.Fragment>
@@ -167,6 +176,9 @@ class EditorSesion extends Component {
             {<DatePicker input_name="fecha" label="Dia" />}
               <div className="col  s0 xl1"> </div>
             {<TimePicker input_name="hora"  label="Hora" />}
+              <div className="col  s0 xl1"> </div>
+            {<InputPrecio input_name="precio" precio={this.props.sesion.precio} onChange={this.handleChangeSesion} label="Precio en euros" />}
+
           </div>
           <div className="col  s12 xl10 offset-xl1" >
             <div className="divider"></div>

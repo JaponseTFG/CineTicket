@@ -22,7 +22,7 @@ class Butaca extends Component {
       return "btn btn-xs";
     else
       return "btn btn-xs transparent";
-      //return "btn-floating btn-floating-xs pulse";
+
   }
 
   render() {

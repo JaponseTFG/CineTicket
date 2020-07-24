@@ -9,6 +9,7 @@ const userSchema = new Schema({
   username:  {type: String}, //Email
   password:  {type: String}, //Email
   tipo:  {type: Number, default:1}, //Email
+  n_reservas: {type: Number, default:0}
 });
 
 mongoose.model('users',userSchema);//Esto es un comando, si existe no lo crea;nombre, esquema

@@ -3,6 +3,8 @@ const bcrypt = require("bcrypt");
 
 const mongoose = require("mongoose");
 const User = mongoose.model("users");
+const Reserva = mongoose.model("reservas");
+
 module.exports = (app) => {
   //ruta para lanzar la peticion de los datos del usuario
   app.get(
@@ -22,10 +24,25 @@ module.exports = (app) => {
     }
   ); //es un middleware
 
-  app.get("/api/current_user", (req, res) => {
+  app.get("/api/current_user", async (req, res) => {
+
     if (req.user) {
-      if (req.user.tipo == 1) res.send(req.user);
-      else res.send({ tipo: req.user.tipo });
+      switch(req.user.tipo){
+        case 1:
+          let foundReservas = await Reserva.find({ _usuario: req.user._id, estado: "reservada"});
+          req.user.n_reservas = foundReservas.length;
+          await req.user.save();
+          res.send(req.user);
+        break;
+        case 2:
+          res.send({ tipo: req.user.tipo });
+        break;
+        case 3:
+          res.send({ tipo: req.user.tipo });
+        break;
+        default:
+        break;
+      }
     } else {
       res.send(false);
     }

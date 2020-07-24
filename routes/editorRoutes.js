@@ -16,7 +16,7 @@ module.exports = (app) => {
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   /// RUTAS EDICION SESIONES ////////////////////////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
- 
+
   app.post("/api/admin/editSesion", requireLogin, async (req, res) => {
     try{
       if(req.body.sesion._id){
@@ -31,6 +31,7 @@ module.exports = (app) => {
           res.send((lastSesion) ? (true) : (false));
         }
       }else{
+        console.log(req.body.sesion);
         let newSesion    = await new Sesion(req.body.sesion).save();
         let foundButacas = await Butaca.find({ _sala: newSesion._sala },'-_id indice_x indice_y columna fila').lean();
         foundButacas.map((butaca) => { butaca._sesion = newSesion._id });
@@ -45,7 +46,7 @@ module.exports = (app) => {
 
   app.get("/api/admin/listaSesiones", requireLogin, async (req, res) => {
     try{
-      let foundListaSesiones  = await Sesion.find({},'_id nombre fecha _pelicula _sala').populate('_pelicula','titulo').populate('_sala','nombre');
+      let foundListaSesiones  = await Sesion.find({}).populate('_pelicula','titulo').populate('_sala','nombre');
       let foundListaPeliculas = await Pelicula.find({},'_id titulo');
       let foundListaSalas     = await Sala.find({},'_id nombre');
       const opciones = { lista_peliculas : foundListaPeliculas, lista_salas : foundListaSalas };

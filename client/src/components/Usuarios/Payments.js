@@ -5,32 +5,33 @@ import ReactStripeCheckout from "react-stripe-checkout";
 import * as actions from '../../actions';
 import keys from "../../config/keys";
 
+
 class Payments extends Component {
   constructor(props) {
     super(props);
-    this.amount = 1000;
   }
 
   render() {
-
     return (
       <ReactStripeCheckout
         name="cineticket"
-        email={this.props.email}
+        email = { this.props.email }
         description="Compra tus entradas"
         image="https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcRks8tpvWNATSuCgs00MauzIIWAAh7BNba4wQ&usqp=CAU"
-        amount={this.amount}
+        amount = {this.props.precio_total}
         allowRememberMe
-        panelLabel="Total: "
-        currency="EUR"
-        stripeKey={keys.stripePublic}
-
-        token={(token) =>  {token.amount=this.amount;return this.props.handleToken(token)}}
-      >
-        <button className="btn">Proceder al pago</button>
+        panelLabel = "Total: "
+        currency ="EUR"
+        stripeKey = { keys.stripePublic }
+        token={(token) =>  { token.amount = this.props.precio_total; return this.props.handleToken(token) }}>
+        <button className="btn-large  blue-grey darken-1 right">Proceder al pago</button>
       </ReactStripeCheckout>
     );
   }
 }
 
-export default connect(null, actions)(Payments);
+function mapStateToProps(state) {
+  return { email: state.auth.email};
+}
+
+export default connect(mapStateToProps, actions)(Payments);

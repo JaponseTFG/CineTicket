@@ -21,7 +21,7 @@ const NotFound = () => {
 
 class DashboardAdmin extends Component {
 
-  confirmarAutorizacion(){
+  render(){
     if(this.props.auth == null || this.props.auth == false|| this.props.auth.tipo==1){
         return(this.props.auth == null) ? (<Waiting/>):(<Redirect to={"/forbidden"} />)
     }else {
@@ -41,16 +41,6 @@ class DashboardAdmin extends Component {
     }
   }
 
-  render(){
-    return (
-      <div className="row" style={{padding:"1%"}}>
-        <div className="col xl1" ></div>
-        <div className="card-panel grey lighten-4 col s12 l12 xl10" style={{minHeight:"15%",paddingTop:"1%"}}>
-          {this.confirmarAutorizacion()}
-        </div>
-      </div>
-    );
-  }
 };
 
 function mapStateToProps(state) {

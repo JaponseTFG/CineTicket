@@ -10,7 +10,7 @@ import Waiting from "../Waiting"
 
 const Pelicula = (props)=>{
   return(
-    <div key={props.index} className="col s12 m12 l6 xl4">
+    <div key={props.index} className="col s12 m6 l6 xl4">
       <div className="card grey  lighten-5">
         <div className="card-image " >
             <img src={props.pelicula.src_imagen} ></img>

@@ -43,30 +43,25 @@ class LoginAdmin extends Component {
 
   render() {
     return (
-      <div className="row" style={{paddingTop:"1%"}}>
-        <div className="col m1"></div>
-        <div className="card-panel grey lighten-4 col s12 m10" style={{paddingTop:"1%"}}>
-          <form onSubmit={this.handleSubmit}>
-            {this.redirect()}
-            <div className="row">
-              <div className="col s0 m2 l4"></div>
-              <div className="col s12 m8 l4">
-                <div className="input-field col s12 m12 ">
-                  <input id="adminname" name="admin_name" onChange={this.handleChange} type="text"/>
-                  <label htmlFor="adminname">Usuario</label>
-                </div>
-                <div className="input-field col s12 m12 ">
-                  <input id="adminpass" name="admin_pass" onChange={this.handleChange} type="password"/>
-                  <label htmlFor="adminpass">Contraseña</label>
-                </div>
-                <div className="input-field col s12 m12 ">
-                  <button className="btn blue-grey darken-1 right">Acceder</button>
-                </div>
-              </div>
+      <form onSubmit={this.handleSubmit} style={{paddingTop:"2%"}}>
+        {this.redirect()}
+        <div className="row">
+          <div className="col s0 m2 l4"></div>
+          <div className="col s12 m8 l4">
+            <div className="input-field col s12 m12 ">
+              <input id="adminname" name="admin_name" onChange={this.handleChange} type="text"/>
+              <label htmlFor="adminname">Usuario</label>
             </div>
-          </form>
+            <div className="input-field col s12 m12 ">
+              <input id="adminpass" name="admin_pass" onChange={this.handleChange} type="password"/>
+              <label htmlFor="adminpass">Contraseña</label>
+            </div>
+            <div className="input-field col s12 m12 ">
+              <button className="btn blue-grey darken-1 right">Acceder</button>
+            </div>
+          </div>
         </div>
-      </div>
+      </form>
     );
   }
 }
