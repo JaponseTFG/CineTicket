@@ -1,9 +1,9 @@
-const requireLogin    = require("../middlewares/requireLogin");
-const requireCredits  = require("../middlewares/requireCredits");
-const upload          = require("../middlewares/imageupload");
-const keys            = require("../config/keys");
-const fs              = require('fs')
-const fsPromises      = fs.promises;
+const requireLoginAdmin = require("../middlewares/requireLoginAdmin");
+const requireCredits    = require("../middlewares/requireCredits");
+const upload            = require("../middlewares/imageupload");
+const keys              = require("../config/keys");
+const fs                = require('fs')
+const fsPromises        = fs.promises;
 
 const mongoose = require("mongoose");
 const Usuario  = mongoose.model("users"); //si solo pongo un parametro lo accedo
@@ -16,7 +16,7 @@ const Entrada  = mongoose.model("entradas"); //si solo pongo un parametro lo acc
 
 module.exports = (app) => {
 
-  app.get("/api/admin/findEntrada", requireLogin, async (req, res) => {
+  app.get("/api/admin/findEntrada", requireLoginAdmin, async (req, res) => {
     try {
       const foundEntrada = await Entrada.findOne({ _id : req.query.id_entrada }).populate([
         {
@@ -27,7 +27,7 @@ module.exports = (app) => {
     		    path: '_pelicula',
     			  model: 'peliculas',
             select: 'titulo'
-    		  }, 
+    		  },
           {
     		    path: '_sala',
     			  model: 'salas',
@@ -47,7 +47,7 @@ module.exports = (app) => {
     }
   });
 
-  app.post("/api/admin/validaEntrada", requireLogin, async (req, res) => {
+  app.post("/api/admin/validaEntrada", requireLoginAdmin, async (req, res) => {
     try {
       const foundEntrada = await Entrada.findOne({ _id : req.body._id });
       if(foundEntrada.validada == true){
@@ -64,7 +64,7 @@ module.exports = (app) => {
   });
 
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  app.get("/api/admin/findUsuario", requireLogin, async (req, res) => {
+  app.get("/api/admin/findUsuario", requireLoginAdmin, async (req, res) => {
     try{
       const foundUsuario = await Usuario.findOne({ email : req.query.email });
       if(foundUsuario){
@@ -79,7 +79,7 @@ module.exports = (app) => {
   });
 
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  app.get("/api/admin/listaEntradas", requireLogin, async (req, res) => {
+  app.get("/api/admin/listaEntradas", requireLoginAdmin, async (req, res) => {
     try{
       const foundEntradas = await Entrada.find({ _sesion : req.query.id_sesion }).populate('_usuario', 'email');
 
@@ -94,7 +94,7 @@ module.exports = (app) => {
     }
   });
 
-  app.post("/api/admin/deleteEntrada", requireLogin, async (req, res) => {
+  app.post("/api/admin/deleteEntrada", requireLoginAdmin, async (req, res) => {
     try {
       const isDeleted = await Entrada.findByIdAndDelete({ _id : req.body._id });
       res.send((isDeleted) ? (true) : (false));
@@ -108,7 +108,7 @@ module.exports = (app) => {
   /// RUTAS EDICION SESIONES ////////////////////////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  app.post("/api/admin/editSesion", requireLogin, async (req, res) => {
+  app.post("/api/admin/editSesion", requireLoginAdmin, async (req, res) => {
     try{
       if(req.body.sesion._id){
         let lastSesion = await Sesion.findOneAndUpdate({_id : req.body.sesion._id},req.body.sesion);
@@ -135,7 +135,7 @@ module.exports = (app) => {
     }
   });
 
-  app.get("/api/admin/listaSesiones", requireLogin, async (req, res) => {
+  app.get("/api/admin/listaSesiones", requireLoginAdmin, async (req, res) => {
     try{
       let foundListaSesiones  = await Sesion.find({}).populate('_pelicula','titulo').populate('_sala','nombre');
       let foundListaPeliculas = await Pelicula.find({},'_id titulo');
@@ -148,7 +148,7 @@ module.exports = (app) => {
     }
   });
 
-  app.post("/api/admin/deleteSesion", requireLogin, async (req, res) => {
+  app.post("/api/admin/deleteSesion", requireLoginAdmin, async (req, res) => {
     try{
       let removedSesion   = await Sesion.findByIdAndDelete(req.body._id);
       let removedReservas = await Reserva.deleteMany({ _sesion : req.body._id });
@@ -159,7 +159,7 @@ module.exports = (app) => {
     }
   });
 
-  app.get("/api/admin/sesion", requireLogin, async (req, res) => {
+  app.get("/api/admin/sesion", requireLoginAdmin, async (req, res) => {
     try{
       const foundSesion = await Sesion.findOne({ _id: req.query.id });
       res.send(foundSesion);
@@ -173,7 +173,7 @@ module.exports = (app) => {
   /// RUTAS EDICION SALAS ////////////////////////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  app.post("/api/admin/editSala", requireLogin, async (req, res) => {
+  app.post("/api/admin/editSala", requireLoginAdmin, async (req, res) => {
     try{
       if(req.body.sala._id){
         let lastSala = await Sala.findOneAndUpdate({ _id : req.body.sala._id },req.body.sala);
@@ -194,7 +194,7 @@ module.exports = (app) => {
     }
   });
 
-  app.post("/api/admin/deleteSala", requireLogin, async (req, res) => {
+  app.post("/api/admin/deleteSala", requireLoginAdmin, async (req, res) => {
     try{
       var isUsandose = await Sesion.findOne({_sala: req.body._id});
       if(isUsandose){
@@ -210,7 +210,7 @@ module.exports = (app) => {
     }
   });
 
-  app.get("/api/admin/listaSalas", requireLogin, async (req, res) => {
+  app.get("/api/admin/listaSalas", requireLoginAdmin, async (req, res) => {
     try{
       const foundListaSalas = await Sala.find({},'_id nombre n_asientos');
       res.json(foundListaSalas);
@@ -220,7 +220,7 @@ module.exports = (app) => {
     }
   });
 
-  app.get("/api/admin/sala", requireLogin, async (req, res) => {
+  app.get("/api/admin/sala", requireLoginAdmin, async (req, res) => {
     try{
       const foundSala = await Sala.findOne({_id: req.query.id});
       const foundButacas =  await Butaca.find({_sala: req.query.id});
@@ -235,7 +235,7 @@ module.exports = (app) => {
   /// RUTAS EDICION PELICULAS ///////////////////////////////////////////////////////////////////////////////////////
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  app.post("/api/admin/editPelicula", requireLogin, upload.single("imagen"), async (req, res) => {
+  app.post("/api/admin/editPelicula", requireLoginAdmin, upload.single("imagen"), async (req, res) => {
     try {
       var src_imagen = req.file ? "/uploads/" + req.file.filename.replace(" ", "_") : null;
 
@@ -259,7 +259,7 @@ module.exports = (app) => {
     }
   });
 
-  app.post("/api/admin/deletePelicula", requireLogin, async (req, res) => {
+  app.post("/api/admin/deletePelicula", requireLoginAdmin, async (req, res) => {
     try {
       var isUsandose = await Sesion.findOne({ _pelicula: new mongoose.Types.ObjectId(req.body.id) });
       if(isUsandose){
@@ -279,7 +279,7 @@ module.exports = (app) => {
     }
   });
 
-  app.get("/api/admin/listaPeliculas", requireLogin, async (req, res) => {
+  app.get("/api/admin/listaPeliculas", requireLoginAdmin, async (req, res) => {
     try {
       const foundPeliculas = await Pelicula.find({});
       res.json(foundPeliculas);

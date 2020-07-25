@@ -56,6 +56,7 @@ export const loadEntrada = (id_entrada) => {
         dispatch({ type: LOAD_INFO_ENTRADA, payload: entrada.data });
       }else{
         dispatch({ type: LOAD_INFO_ENTRADA, payload: null });
+        showError("Entrada no válida");
       }
     } catch (err) {
       console.log(err);
