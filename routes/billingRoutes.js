@@ -61,8 +61,8 @@ module.exports = (app) => {
             new_entrada.butacas.push(reserva._id);
           })
 
-          var confirmada = await new_entrada.save();
-          console.log("confirmada",confirmada);
+          new_entrada = await new_entrada.save();
+
           req.user.n_reservas = 0;
           await req.user.save();
           res.send(true);
@@ -79,7 +79,7 @@ module.exports = (app) => {
              nombre_sala        : foundSesion._sala.nombre.toString(),
              str_fecha          : fecha_formateada,
              str_butacas        : str_butacas,
-             str_id             : success_reserva._id.toString(),
+             str_id             : new_entrada._id.toString(),
              str_fecha_compra   : new Date().toString(),
              filename           : filename,
           };

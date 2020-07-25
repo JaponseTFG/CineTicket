@@ -18,8 +18,10 @@ class LectorQr extends Component {
 
   }
   handleScan = data => {
-    this.props.targetEntrada(data);
-    this.props.loadEntrada(data);
+    if(data != null){
+      this.props.targetEntrada(data);
+      this.props.loadEntrada(data);
+    }  
   }
   handleError = err => {
     console.error(err)
