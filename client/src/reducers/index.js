@@ -6,6 +6,8 @@ import salasReducer from './salasReducer';
 import entradasReducer from './entradasReducer';
 import sesionesReducer from './sesionesReducer';
 import reservasReducer from './reservasReducer';
+import validacionReducer from './validacionReducer';
+
 
 export default combineReducers({
     auth:  authReducer,
@@ -15,4 +17,5 @@ export default combineReducers({
     sesiones: sesionesReducer,
     entradas : entradasReducer,
     reserva: reservasReducer,
+    validacion: validacionReducer,
 });

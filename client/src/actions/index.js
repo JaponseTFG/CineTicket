@@ -39,10 +39,59 @@ import { CHANGE_SELECCION } from '../actions/types';
 import { LOAD_ENTRADAS } from '../actions/types';
 import { DELETE_ENTRADA } from '../actions/types';
 
+import { LOAD_INFO_ENTRADA } from '../actions/types';
+import { TARGET_ENTRADA } from '../actions/types';
+import { VALIDA_ENTRADA } from '../actions/types';
+
 import M from "materialize-css";
 //El action creator devolvera una funcion
 //thunk vera que devolvemos una funcion y la llamara con el dispatch
 //solo cuando la tenga la dispacho
+
+export const loadEntrada = (id_entrada) => {
+  return async (dispatch) => {
+    try {
+      const entrada = await axios.get( "/api/admin/findEntrada?id_entrada=" + id_entrada, { responseType: "json" });
+      if(entrada.data){
+        dispatch({ type: LOAD_INFO_ENTRADA, payload: entrada.data });
+      }else{
+        dispatch({ type: LOAD_INFO_ENTRADA, payload: null });
+      }
+    } catch (err) {
+      console.log(err);
+      showError("Parece que ha habido un problema con la solicitud, vueva a intentarlo.");
+    }
+  };
+}
+
+export const validaEntrada = (id_entrada) => {
+  console.log(id_entrada);
+  return async (dispatch) => {
+    try {
+      const isValidada = await axios.post( "/api/admin/validaEntrada",{_id:id_entrada});
+      if(isValidada.data){
+        dispatch({ type: LOAD_INFO_ENTRADA, payload: null });
+        showSucces("Entrada validada correctamente");
+      }else{
+        dispatch({ type: LOAD_INFO_ENTRADA, payload: null });
+        showError("Entrada no válida");
+      }
+    } catch (err) {
+      console.log(err);
+      showError("Parece que ha habido un problema con la solicitud, vueva a intentarlo.");
+    }
+  };
+}
+
+export const targetEntrada = (id_entrada) => {
+  return (dispatch) => {
+    dispatch({ type: TARGET_ENTRADA, payload: id_entrada });
+  };
+}
+
+
+
+//ADMIN ENTRADAS
 
 export const loadEntradas = (id_sesion) => {
   return async (dispatch) => {
@@ -101,14 +150,6 @@ export const deleteEntrada = (id_entrada, index) => {
     }
   };
 }
-
-
-
-
-
-
-
-
 
 
 /////Usuarios

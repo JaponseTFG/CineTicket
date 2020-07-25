@@ -47,3 +47,9 @@ export const LOAD_SALA_RESERVA        = 'load_sala_reserva';
 export const TARGET_BUTACA_RESERVA    = 'target_butaca_reserva';
 export const ACTUALIZA_BUTACA_RESERVA = 'actualiza_butaca_reserva';
 export const SUBMIT_RESERVA           = 'submit_reserva';
+
+
+//Validacion de entradas
+export const LOAD_INFO_ENTRADA = 'load_info_entrada';
+export const TARGET_ENTRADA    = 'target_entrada';
+export const VALIDA_ENTRADA    = 'valida_entrada';

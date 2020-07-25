@@ -7,6 +7,7 @@ const entradaSchema = new Schema({
   n_entradas : {type : Number},
   butacas : [{ type: Schema.Types.ObjectId, ref: 'reservaButacas' }],
   fecha_compra : {type:Date},
+  validada : {type:Boolean, default: false},
 });
 
 mongoose.model('entradas',entradaSchema);//Esto es un comando, si existe no lo crea;nombre, esquema

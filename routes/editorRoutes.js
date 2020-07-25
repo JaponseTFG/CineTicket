@@ -18,7 +18,24 @@ module.exports = (app) => {
 
   app.get("/api/admin/findEntrada", requireLogin, async (req, res) => {
     try {
-      const foundEntrada = await Entrada.findOne({ _id : req.body._id }).populate('_sesion','_pelicula _sala fecha').populate('_pelicula', 'titulo').populate('_sala', 'nombre');
+      const foundEntrada = await Entrada.findOne({ _id : req.query.id_entrada }).populate([
+        {
+          path: '_sesion',
+          model: 'sesiones',
+          select: '_pelicula _sala fecha',
+    		  populate:[ {
+    		    path: '_pelicula',
+    			  model: 'peliculas',
+            select: 'titulo'
+    		  }, 
+          {
+    		    path: '_sala',
+    			  model: 'salas',
+            select: 'nombre'
+    		  }]
+        },
+      ]);
+
       if(foundEntrada){
         res.json(foundEntrada);
       }else{
