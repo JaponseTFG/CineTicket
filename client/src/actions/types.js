@@ -2,6 +2,14 @@ export const GET_AUTH             = 'get_auth';
 export const FETCH_PAYMENT        = 'fetch_payment';
 export const REDIRECT             = 'redirect';
 
+
+//Admin entradas
+
+export const LOAD_OPCIONES     = 'load_opciones';
+export const CHANGE_SELECCION  = 'change_seleccion';
+export const LOAD_ENTRADAS     = 'load_entradas';
+export const DELETE_ENTRADA    = 'delete_entrada';
+
 //Admin peliculas
 
 export const GOTO_EDIT_PELICULA     = 'goto_edit_pelicula';

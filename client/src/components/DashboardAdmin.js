@@ -14,6 +14,8 @@ import EditorSala from "./Admin/Salas/EditorSala";
 import ListadoSesiones from "./Admin/Sesiones/ListadoSesiones";
 import EditorSesion from "./Admin/Sesiones/EditorSesion";
 import Plantilla from "./Admin/plantilla2";
+import ListadoEntradas from "./Admin/Entradas/ListadoEntradas";
+import LectorQR from "./Admin/LectorQr/LectorQR";
 
 const NotFound = () => {
   return <h5 className="center-align">Error 404: Ruta desconocida.</h5>;
@@ -34,6 +36,8 @@ class DashboardAdmin extends Component {
             <Route exact={true} path="/admin/salas-edit" component={EditorSala} />
             <Route exact={true} path="/admin/sesiones" component={ListadoSesiones} />
             <Route exact={true} path="/admin/sesiones-edit" component={EditorSesion} />
+            <Route exact={true} path="/admin/entradas" component={ListadoEntradas} />
+            <Route exact={true} path="/admin/validacion" component={LectorQR} />
             <Route exact={true} path="/admin/TEST" component={Plantilla} />
             <Route exact={false} path="/" component={NotFound} />
         </Switch>

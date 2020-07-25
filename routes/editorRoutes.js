@@ -6,13 +6,87 @@ const fs              = require('fs')
 const fsPromises      = fs.promises;
 
 const mongoose = require("mongoose");
+const Usuario  = mongoose.model("users"); //si solo pongo un parametro lo accedo
 const Pelicula = mongoose.model("peliculas"); //si solo pongo un parametro lo accedo
 const Sala     = mongoose.model("salas"); //si solo pongo un parametro lo accedo
 const Sesion   = mongoose.model("sesiones"); //si solo pongo un parametro lo accedo
 const Butaca   = mongoose.model("butacas"); //si solo pongo un parametro lo accedo
 const Reserva  = mongoose.model("reservas"); //si solo pongo un parametro lo accedo
+const Entrada  = mongoose.model("entradas"); //si solo pongo un parametro lo accedo
 
 module.exports = (app) => {
+
+  app.get("/api/admin/findEntrada", requireLogin, async (req, res) => {
+    try {
+      const foundEntrada = await Entrada.findOne({ _id : req.body._id }).populate('_sesion','_pelicula _sala fecha').populate('_pelicula', 'titulo').populate('_sala', 'nombre');
+      if(foundEntrada){
+        res.json(foundEntrada);
+      }else{
+        res.send(false);
+      }
+    }catch(err){
+      console.log("Error en get/findEntrada", err);
+      res.send(false);
+    }
+  });
+
+  app.post("/api/admin/validaEntrada", requireLogin, async (req, res) => {
+    try {
+      const foundEntrada = await Entrada.findOne({ _id : req.body._id });
+      if(foundEntrada.validada == true){
+        res.send(false);
+      }else{
+        foundEntrada.validada = true;
+        await foundEntrada.save();
+        res.send(true);
+      }
+    }catch(err){
+      console.log("Error en post/validaEntrada");
+      res.send(false);
+    }
+  });
+
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  app.get("/api/admin/findUsuario", requireLogin, async (req, res) => {
+    try{
+      const foundUsuario = await Usuario.findOne({ email : req.query.email });
+      if(foundUsuario){
+        res.send(foundUsuario);
+      }else{
+        res.send(false);
+      }
+    }catch(err){
+      console.log("Error en get/findUsuario", err);
+      res.send(false);
+    }
+  });
+
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  app.get("/api/admin/listaEntradas", requireLogin, async (req, res) => {
+    try{
+      const foundEntradas = await Entrada.find({ _sesion : req.query.id_sesion }).populate('_usuario', 'email');
+
+      if(foundEntradas.length == 0){
+        res.send(false);
+      }else{
+        res.send(foundEntradas);
+      }
+    }catch(err){
+      console.log("Error en get/listaEntradas", err);
+      res.send(false);
+    }
+  });
+
+  app.post("/api/admin/deleteEntrada", requireLogin, async (req, res) => {
+    try {
+      const isDeleted = await Entrada.findByIdAndDelete({ _id : req.body._id });
+      res.send((isDeleted) ? (true) : (false));
+    }catch(err){
+      console.log("Error en post/validaEntrada");
+      res.send(false);
+    }
+  })
+
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   /// RUTAS EDICION SESIONES ////////////////////////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -24,11 +24,11 @@ class PanelAdministrador extends Component {
             <i className="left medium material-icons">date_range</i>
             <h5 className="center"><b>SESIONES</b></h5>
           </Link>
-          <Link to={"/admin/peliculas"} className="col s10 l4 offset-s1 offset-l1 card-panel hoverable grey  lighten-5" style={{padding:"1%",color:"black"}}>
+          <Link to={"/admin/entradas"} className="col s10 l4 offset-s1 offset-l1 card-panel hoverable grey  lighten-5" style={{padding:"1%",color:"black"}}>
             <i className="left medium material-icons">confirmation_number</i>
             <h5 className="center"><b>ENTRADAS</b></h5>
           </Link>
-          <Link to={"/admin/TEST"} className="col s10 l4 offset-s1 offset-l1 card-panel hoverable grey  lighten-5" style={{padding:"1%",color:"black"}}>
+          <Link to={"/admin/validacion"} className="col s10 l4 offset-s1 offset-l1 card-panel hoverable grey  lighten-5" style={{padding:"1%",color:"black"}}>
             <i className="left medium material-icons">qr_code_scanner</i>
             <h5 className="center"><b>VALIDACIÓN</b></h5>
           </Link>

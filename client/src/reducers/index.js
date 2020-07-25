@@ -3,6 +3,7 @@ import authReducer from './authReducer';
 import ticketsReducer from './ticketsReducer';
 import peliculasReducer from './peliculasReducer';
 import salasReducer from './salasReducer';
+import entradasReducer from './entradasReducer';
 import sesionesReducer from './sesionesReducer';
 import reservasReducer from './reservasReducer';
 
@@ -12,5 +13,6 @@ export default combineReducers({
     pelis: peliculasReducer,
     salas: salasReducer,
     sesiones: sesionesReducer,
+    entradas : entradasReducer,
     reserva: reservasReducer,
 });

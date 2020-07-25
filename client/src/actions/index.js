@@ -34,11 +34,82 @@ import { TARGET_BUTACA_RESERVA } from '../actions/types';
 import { ACTUALIZA_BUTACA_RESERVA } from '../actions/types';
 import { SUBMIT_RESERVA } from '../actions/types';
 
+import { LOAD_OPCIONES } from '../actions/types';
+import { CHANGE_SELECCION } from '../actions/types';
+import { LOAD_ENTRADAS } from '../actions/types';
+import { DELETE_ENTRADA } from '../actions/types';
 
 import M from "materialize-css";
 //El action creator devolvera una funcion
 //thunk vera que devolvemos una funcion y la llamara con el dispatch
 //solo cuando la tenga la dispacho
+
+export const loadEntradas = (id_sesion) => {
+  return async (dispatch) => {
+    try {
+      console.log(id_sesion);
+      const entradas = await axios.get( "/api/admin/listaEntradas?id_sesion=" + id_sesion, { responseType: "json" });
+      if(entradas.data){
+        dispatch({ type: LOAD_ENTRADAS, payload: entradas.data });
+      }else{
+        dispatch({ type: LOAD_ENTRADAS, payload: null });
+        showError("No hemos encontrado entradas para esta sesion");
+      }
+    } catch (err) {
+      console.log(err);
+      showError("Parece que ha habido un problema con la solicitud, vueva a intentarlo.");
+    }
+  };
+}
+
+export const loadOpcionesEntradas = () => {
+  return async (dispatch) => {
+    try {
+      const opciones = await axios.get("/api/admin/listaSesiones");
+      if (opciones.data) {
+        dispatch({ type: LOAD_OPCIONES, payload: opciones.data.lista_sesiones });
+      }else{
+        showError("Parece que ha habido un problema con la solicitud, vueva a intentarlo.");
+      }
+    } catch (err) {
+      console.log(err);
+      showError("Parece que ha habido un problema con la solicitud, vueva a intentarlo.");
+    }
+  };
+}
+
+export const changeSeleccion = (id_sesion) => {
+  return (dispatch) => {
+    dispatch({ type: CHANGE_SELECCION, payload: id_sesion });
+  };
+}
+
+export const deleteEntrada = (id_entrada, index) => {
+  return async (dispatch) => {
+    try {
+      const isDeleted = await axios.post("/api/admin/deleteEntrada", {_id:id_entrada});
+
+      if(isDeleted.data){
+        showSucces("La entrada se ha eliminado correctamente");
+        dispatch({ type: DELETE_ENTRADA, payload: index });
+      }else{
+        showError("Ha habido un problema al eliminar la entrada.");
+      }
+    } catch (err) {
+      console.log(err);
+      showError("Ha habido un problema al eliminar la entrada.");
+    }
+  };
+}
+
+
+
+
+
+
+
+
+
 
 /////Usuarios
 export const loadCartelera = () => {
