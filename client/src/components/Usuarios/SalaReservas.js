@@ -3,7 +3,7 @@ import { Component } from "react";
 import { Redirect } from "react-router";
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
-import * as actions from "../../actions";
+import * as actions from "../../actions/userActions";
 
 import M from "materialize-css";
 import Waiting from "../Waiting"
@@ -19,7 +19,7 @@ const LeyendaButacas = () => {
         <td> Disponible        &nbsp;<div className="btn btn-xs" ></div></td>
         <td> Seleccionada      &nbsp;<div className="btn btn-xs  lime accent-4"></div></td>
         <td> Reservada         &nbsp;<div className="btn btn-xs grey lighten-2"></div></td>
-        <td> Ocupada           &nbsp;<div className="btn btn-xs red darken-4"></div></td>
+        <td> Ocupada           &nbsp;<div className="btn btn-xs red darken-1"></div></td>
       </tr>
       </tbody>
     </table>

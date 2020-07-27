@@ -2,11 +2,12 @@ import React from "react";
 import { Component } from "react";
 import { connect } from "react-redux";
 import ReactStripeCheckout from "react-stripe-checkout";
-import * as actions from '../../actions';
+import * as actions from '../../actions/userActions';
+
 import keys from "../../config/keys";
 
 
-class Payments extends Component {
+class StripePago extends Component {
   constructor(props) {
     super(props);
   }
@@ -23,7 +24,7 @@ class Payments extends Component {
         panelLabel = "Total: "
         currency ="EUR"
         stripeKey = { keys.stripePublic }
-        token={(token) =>  { token.amount = this.props.precio_total; return this.props.handleToken(token) }}>
+        token={(token) =>  { token.amount = this.props.precio_total; return this.props.handleTokenStripe(token) }}>
         <button className="btn-large  blue-grey darken-1 right">Proceder al pago</button>
       </ReactStripeCheckout>
     );
@@ -34,4 +35,4 @@ function mapStateToProps(state) {
   return { email: state.auth.email};
 }
 
-export default connect(mapStateToProps, actions)(Payments);
+export default connect(mapStateToProps, actions)(StripePago);

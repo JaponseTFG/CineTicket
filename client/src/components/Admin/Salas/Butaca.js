@@ -1,7 +1,7 @@
 import React from "react";
 import { Component } from "react";
 import { connect } from "react-redux";
-import * as actions from "../../../actions";
+import * as actions from "../../../actions/salasActions";
 
 import M from "materialize-css";
 

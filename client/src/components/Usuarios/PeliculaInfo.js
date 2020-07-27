@@ -3,7 +3,7 @@ import { Component } from "react";
 import { Redirect } from "react-router";
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
-import * as actions from "../../actions";
+import * as actions from "../../actions/userActions";
 
 import M from "materialize-css";
 import Waiting from "../Waiting"
@@ -11,9 +11,8 @@ import Waiting from "../Waiting"
 
 const DatePicker = (props) => {
   return(
-    <div className="input-field col s12  l12">
-        <input name={props.input_name}  type="text"  autoComplete="off" className="datepicker"></input>
-      <label>{props.label}</label>
+    <div className="input-field col s12  l12" >
+        <input name={props.input_name}  Placeholder="Pulsa aquí para elegir un día" type="text"   className="datepicker" style={{cursor : "pointer"}}></input>
     </div>
   )
 };
@@ -53,6 +52,8 @@ class PeliculaInfo extends Component {
   componentDidMount(){
     document.body.scrollIntoView({behavior: 'smooth', block: 'start'});
     this.initPicker();
+
+
   }
 
   initPicker(){
@@ -107,7 +108,7 @@ class PeliculaInfo extends Component {
         <div className="row">
           <div className="col s10 xl4 offset-xl1 offset-s1">
             <div className="card">
-              <div className="card-image">
+              <div id="img_cnt" className="card-image">
                   <img src={this.props.pelicula.src_imagen} ></img>
               </div>
             </div>

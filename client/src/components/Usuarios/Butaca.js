@@ -1,7 +1,7 @@
 import React from "react";
 import { Component } from "react";
 import { connect } from "react-redux";
-import * as actions from "../../actions";
+import * as actions from "../../actions/userActions";
 
 import M from "materialize-css";
 
@@ -13,7 +13,8 @@ class Butaca extends Component {
   }
 
   handleChangeButacas() {
-    this.props.targetButaca(this.props.butaca._id, this.props.index);
+    if(this.props.butaca.estado != "ocupada")
+      this.props.targetButaca(this.props.butaca._id, this.props.index);
   }
 
   currentClass(){

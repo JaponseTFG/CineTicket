@@ -1,7 +1,7 @@
 import React from "react";
 import { Component } from "react";
 import { connect } from "react-redux";
-import * as actions from "../actions";
+import * as actions from "../actions/authActions";
 import { Redirect } from "react-router";
 import M from "materialize-css";
 
@@ -9,15 +9,13 @@ class LoginAdmin extends Component {
 
   constructor(props) {
     super(props);
-    this.state = {admin_pass:null,admin_name:null};
+    this.state = { admin_pass : null, admin_name : null };
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   componentDidMount() {
-
     document.body.scrollIntoView({behavior: 'smooth', block: 'start'});
-
   }
 
   handleChange(event) {

@@ -1,7 +1,6 @@
 import React from "react";
 import { Component } from "react";
 import { connect } from "react-redux";
-import * as actions from "../actions";
 import { Switch, Route } from "react-router-dom";
 import { Redirect } from "react-router";
 
@@ -36,4 +35,4 @@ function mapStateToProps(state) {
   return { auth: state.auth };
 }
 
-export default connect(mapStateToProps, actions)(DashboardUser);
+export default connect(mapStateToProps, null)(DashboardUser);

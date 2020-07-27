@@ -1,21 +1,21 @@
-const keys = require("../config/keys");
-
 const requireLogin = require("../middlewares/requireLogin");
-const clearReservas = require("../middlewares/clearReservas");
+const keys = require("../config/keys");
 
 const mongoose = require("mongoose");
 const Pelicula = mongoose.model("peliculas"); //si solo pongo un parametro lo accedo
-const Sala = mongoose.model("salas"); //si solo pongo un parametro lo accedo
-const Sesion = mongoose.model("sesiones"); //si solo pongo un parametro lo accedo
-const Reserva = mongoose.model("reservas"); //si solo pongo un parametro lo accedo
-const User = mongoose.model("users");
+const Sala     = mongoose.model("salas"); //si solo pongo un parametro lo accedo
+const Sesion   = mongoose.model("sesiones"); //si solo pongo un parametro lo accedo
+const Reserva  = mongoose.model("reservas"); //si solo pongo un parametro lo accedo
+const User     = mongoose.model("users");
 
 module.exports = (app) => {
+
   app.get("/api/listaPeliculasCartelera", async (req, res) => {
     try {
       const foundPeliculas = await Pelicula.find({});
       res.json(foundPeliculas);
     } catch (err) {
+      console.log("Error en get /api/listaPeliculasCartelera", err);
       res.send(false);
     }
   });
@@ -30,6 +30,7 @@ module.exports = (app) => {
       .populate('_sala').sort({ fecha: "asc" });
       res.send(sesiones);
     } catch (err) {
+      console.log("Error en get /api/sesionesUndia", err);
       res.send(false);
     }
   });
@@ -37,7 +38,8 @@ module.exports = (app) => {
   app.get("/api/butacasSesion", requireLogin, async (req, res) => {
     try {
       let foundButacas = await Reserva.find({ _sesion: req.query.id });
-      let butacasReservadas = foundButacas.filter(butaca => butaca.estado  == "reservada");
+      let butacasReservadas = foundButacas.filter( butaca => butaca.estado  == "reservada" );
+
       if(butacasReservadas.length > 0){
         let hora_actual = new Date().getTime();
         await butacasReservadas.forEach(
@@ -45,6 +47,8 @@ module.exports = (app) => {
             try{
               if(butaca._usuario.toString() == req.user._id)
                 butaca.estado = "seleccionada";
+
+              //Limpio las reservas caducadas
               var tiempo_desde_reserva = (hora_actual - butaca.fecha_reserva.getTime());
               if(tiempo_desde_reserva > 600000){
                 if(butaca._usuario.toString() == req.user._id)
@@ -59,13 +63,12 @@ module.exports = (app) => {
               res.send(false);
             }
         });
+        await User.findOneAndUpdate( { _id : req.user._id }, req.user);
       }
-
-      await User.findOneAndUpdate( { _id : req.user._id }, req.user);
 
       res.json(foundButacas);
     } catch (err) {
-      console.log(err);
+      console.log("Error en get /api/butacasSesion", err);
       res.send(false);
     }
   });
@@ -74,7 +77,6 @@ module.exports = (app) => {
     try {
         let foundButaca = await Reserva.findOne({ _id: req.body._id });
         let nuevo_estado;
-        console.log("NRES",req.user.n_reservas)
 
         switch(foundButaca.estado){
           case "disponible" :
@@ -126,9 +128,10 @@ module.exports = (app) => {
           default :
             nuevo_estado = "ocupada";
         }
+
         res.json({ success : true, estado : nuevo_estado});
     } catch (err) {
-      console.log("err", err);
+      console.log("Error en post /api/targetButaca", err);
       res.send(false);
     }
   });

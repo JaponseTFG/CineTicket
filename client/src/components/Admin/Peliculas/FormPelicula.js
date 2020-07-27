@@ -3,7 +3,7 @@ import { Component } from "react";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 import { Redirect } from "react-router";
-import * as actions from "../../../actions";
+import * as actions from "../../../actions/peliculasActions.js";
 import M from "materialize-css";
 
 import Dropzone from "./Dropzone";

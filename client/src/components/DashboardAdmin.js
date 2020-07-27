@@ -1,7 +1,6 @@
 import React from "react";
 import { Component } from "react";
 import { connect } from "react-redux";
-import * as actions from "../actions";
 import { Switch, Route  } from "react-router-dom";
 import { Redirect } from "react-router";
 
@@ -13,7 +12,6 @@ import ListadoSalas from "./Admin/Salas/ListadoSalas";
 import EditorSala from "./Admin/Salas/EditorSala";
 import ListadoSesiones from "./Admin/Sesiones/ListadoSesiones";
 import EditorSesion from "./Admin/Sesiones/EditorSesion";
-import Plantilla from "./Admin/plantilla2";
 import ListadoEntradas from "./Admin/Entradas/ListadoEntradas";
 import LectorQR from "./Admin/LectorQr/LectorQR";
 
@@ -38,7 +36,6 @@ class DashboardAdmin extends Component {
             <Route exact={true} path="/admin/sesiones-edit" component={EditorSesion} />
             <Route exact={true} path="/admin/entradas" component={ListadoEntradas} />
             <Route exact={true} path="/admin/validacion" component={LectorQR} />
-            <Route exact={true} path="/admin/TEST" component={Plantilla} />
             <Route exact={false} path="/" component={NotFound} />
         </Switch>
       )
@@ -51,4 +48,4 @@ function mapStateToProps(state) {
   return { auth: state.auth };
 }
 
-export default connect(mapStateToProps, actions)(DashboardAdmin);
+export default connect(mapStateToProps, null)(DashboardAdmin);

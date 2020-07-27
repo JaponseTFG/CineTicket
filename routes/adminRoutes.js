@@ -1,20 +1,22 @@
 const requireLoginAdmin = require("../middlewares/requireLoginAdmin");
-const requireCredits    = require("../middlewares/requireCredits");
 const upload            = require("../middlewares/imageupload");
 const keys              = require("../config/keys");
 const fs                = require('fs')
 const fsPromises        = fs.promises;
 
 const mongoose = require("mongoose");
-const Usuario  = mongoose.model("users"); //si solo pongo un parametro lo accedo
-const Pelicula = mongoose.model("peliculas"); //si solo pongo un parametro lo accedo
-const Sala     = mongoose.model("salas"); //si solo pongo un parametro lo accedo
-const Sesion   = mongoose.model("sesiones"); //si solo pongo un parametro lo accedo
-const Butaca   = mongoose.model("butacas"); //si solo pongo un parametro lo accedo
-const Reserva  = mongoose.model("reservas"); //si solo pongo un parametro lo accedo
-const Entrada  = mongoose.model("entradas"); //si solo pongo un parametro lo accedo
+const Usuario  = mongoose.model("users");
+const Pelicula = mongoose.model("peliculas");
+const Sala     = mongoose.model("salas");
+const Sesion   = mongoose.model("sesiones");
+const Butaca   = mongoose.model("butacas");
+const Reserva  = mongoose.model("reservas");
+const Entrada  = mongoose.model("entradas");
 
 module.exports = (app) => {
+
+  /// RUTAS VALIDACIÓN ENTRADAS //////////////////////////////////////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
   app.get("/api/admin/findEntrada", requireLoginAdmin, async (req, res) => {
     try {
@@ -63,31 +65,23 @@ module.exports = (app) => {
     }
   });
 
-  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   app.get("/api/admin/findUsuario", requireLoginAdmin, async (req, res) => {
     try{
       const foundUsuario = await Usuario.findOne({ email : req.query.email });
-      if(foundUsuario){
-        res.send(foundUsuario);
-      }else{
-        res.send(false);
-      }
+      res.send((foundUsuario) ? (foundUsuario) : (false));
     }catch(err){
       console.log("Error en get/findUsuario", err);
       res.send(false);
     }
   });
 
+  /// RUTAS EDICION ENTRADAS /////////////////////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
   app.get("/api/admin/listaEntradas", requireLoginAdmin, async (req, res) => {
     try{
-      const foundEntradas = await Entrada.find({ _sesion : req.query.id_sesion }).populate('_usuario', 'email');
-
-      if(foundEntradas.length == 0){
-        res.send(false);
-      }else{
-        res.send(foundEntradas);
-      }
+      const foundEntradas = await Entrada.find({ _sesion : req.query.id_sesion }).populate('_usuario', 'email').sort({ fecha_compra : 'ascending'});
+      res.send((foundEntradas.length > 0) ? (foundEntradas) : (false))
     }catch(err){
       console.log("Error en get/listaEntradas", err);
       res.send(false);
@@ -104,8 +98,7 @@ module.exports = (app) => {
     }
   })
 
-  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  /// RUTAS EDICION SESIONES ////////////////////////////////////////////////////////////////////////////////////////////
+  /// RUTAS EDICION SESIONES /////////////////////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
   app.post("/api/admin/editSesion", requireLoginAdmin, async (req, res) => {
@@ -122,7 +115,6 @@ module.exports = (app) => {
           res.send((lastSesion) ? (true) : (false));
         }
       }else{
-        console.log(req.body.sesion);
         let newSesion    = await new Sesion(req.body.sesion).save();
         let foundButacas = await Butaca.find({ _sala: newSesion._sala },'-_id indice_x indice_y columna fila').lean();
         foundButacas.map((butaca) => { butaca._sesion = newSesion._id });
@@ -137,7 +129,7 @@ module.exports = (app) => {
 
   app.get("/api/admin/listaSesiones", requireLoginAdmin, async (req, res) => {
     try{
-      let foundListaSesiones  = await Sesion.find({}).populate('_pelicula','titulo').populate('_sala','nombre');
+      let foundListaSesiones  = await Sesion.find({}).populate('_pelicula','titulo').populate('_sala','nombre').sort({ fecha : 'ascending'});
       let foundListaPeliculas = await Pelicula.find({},'_id titulo');
       let foundListaSalas     = await Sala.find({},'_id nombre');
       const opciones = { lista_peliculas : foundListaPeliculas, lista_salas : foundListaSalas };
@@ -152,7 +144,8 @@ module.exports = (app) => {
     try{
       let removedSesion   = await Sesion.findByIdAndDelete(req.body._id);
       let removedReservas = await Reserva.deleteMany({ _sesion : req.body._id });
-      res.send((removedSesion && removedReservas) ? (true) : (false));
+      let removedEntradas = await Entrada.deleteMany({ _sesion : req.body._id });
+      res.send((removedSesion && removedReservas && removedEntradas) ? (true) : (false));
     }catch(err){
       console.log("ERROR en post/deleteSesion:", err);
       res.send(false);
@@ -169,7 +162,6 @@ module.exports = (app) => {
     }
   });
 
-  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   /// RUTAS EDICION SALAS ////////////////////////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -231,7 +223,6 @@ module.exports = (app) => {
     }
   });
 
-  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   /// RUTAS EDICION PELICULAS ///////////////////////////////////////////////////////////////////////////////////////
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -239,12 +230,12 @@ module.exports = (app) => {
     try {
       var src_imagen = req.file ? "/uploads/" + req.file.filename.replace(" ", "_") : null;
 
-      if (req.body.id) {
+      if (req.body.id) {//edit
         var pelicula = await Pelicula.findOne({ _id: new mongoose.Types.ObjectId(req.body.id) });
         pelicula.titulo = req.body.titulo;
         pelicula.descripcion = req.body.descripcion;
-        src_imagen && (pelicula.src_imagen = src_imagen);
-      } else {
+        src_imagen && (pelicula.src_imagen = src_imagen);//Si ha cambiado la imagen guarda la url nueva
+      } else {//nueva
         var pelicula =  new Pelicula({
           titulo: req.body.titulo,
           descripcion: req.body.descripcion,
@@ -255,6 +246,7 @@ module.exports = (app) => {
       await pelicula.save();
       res.send(pelicula);
     } catch (err) {
+      console.log("ERROR en post/api/admin/editPelicula:", err);
       res.status(401).send({ Error: "Bad request" });
     }
   });
@@ -269,12 +261,13 @@ module.exports = (app) => {
         let removedPelicula = false;
 
         removedPelicula = await Pelicula.findByIdAndDelete(new mongoose.Types.ObjectId(req.body.id));
-        if(removedPelicula.src_imagen){
+        if(removedPelicula.src_imagen)
           removedImage = await fsPromises.unlink("./public"+removedPelicula.src_imagen);
-        }
-        res.send((removedPelicula || removedImage) ? "Ok" : false);
+
+        res.send((removedPelicula || removedImage) ? true : false);
       }
     } catch (err) {
+      console.log("ERROR en post/api/admin/deletePelicula:", err);
       res.status(401).send({ Error: "Bad request" });
     }
   });
@@ -284,6 +277,7 @@ module.exports = (app) => {
       const foundPeliculas = await Pelicula.find({});
       res.json(foundPeliculas);
     } catch (err) {
+      console.log("ERROR en post/api/admin/listaPeliculas:", err);
       res.send(false);
     }
   });

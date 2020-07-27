@@ -2,7 +2,7 @@ import React from "react";
 import { Component } from "react";
 import { connect } from "react-redux";
 import ImageUploader from "react-images-upload";
-import * as actions from "../../../actions";
+import * as actions from "../../../actions/peliculasActions.js";
 import axios from "axios";
 
 class Dropzone extends Component {
@@ -26,7 +26,7 @@ class Dropzone extends Component {
         }}
         withLabel={false}
         withIcon={true}
-        buttonClassName="btn-floating deep-purple lighten-2"
+        buttonClassName="deep-purple lighten-2"
         buttonText={<i className="material-icons">file_upload</i>}
         onChange={this.onDrop}
         imgExtension={[".jpg", ".gif", ".png", ".gif"]}

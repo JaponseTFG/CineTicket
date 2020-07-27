@@ -3,12 +3,11 @@ import { Component } from "react";
 import { Redirect } from "react-router";
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
-import * as actions from "../../actions";
 
 import M from "materialize-css";
 import Waiting from "../Waiting"
 import GridButacas from "./GridButacas"
-import Payments from "./Payments"
+import StripePago from "./StripePago"
 
 const InfoReserva = (props) => {
   return(
@@ -54,7 +53,7 @@ class Checkout extends Component {
   render(){
     if(this.props.sesion == null)
       return <Redirect to={"/sala-reservas"} /> ;
-    if(this.props.isSuccess == true){
+    if(this.props.isSuccess === true){
       return(
         <div className="row" >
           <br></br>
@@ -88,8 +87,8 @@ class Checkout extends Component {
             </div>
             <div className="col  s12 xl10 offset-xl1" >
               <br></br>
-              <br></br>
-                <Payments precio_total={precio_total*100}/>
+              <br></br>        
+                {(this.props.isSuccess == "procesandose") ? (<Waiting />) : (<StripePago precio_total={precio_total*100}/>)}
             </div>
           </div>
       );
@@ -103,4 +102,4 @@ function mapStateToProps(state) {
   return { email: state.auth.email,  pelicula : state.reserva.pelicula, sesion : state.reserva.sesion , butacas_actualizadas : state.reserva.butacas_actualizadas, isSuccess : state.reserva.isSuccess};
 }
 
-export default connect(mapStateToProps, actions)(Checkout);
+export default connect(mapStateToProps, null)(Checkout);

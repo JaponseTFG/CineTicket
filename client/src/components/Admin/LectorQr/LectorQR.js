@@ -3,7 +3,7 @@ import { Component } from "react";
 import { Redirect } from "react-router";
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
-import * as actions from "../../../actions";
+import * as actions from "../../../actions/lectorQRActions";
 
 
 import QrReader from 'react-qr-reader'
@@ -21,7 +21,7 @@ class LectorQr extends Component {
     if(data != null){
       this.props.targetEntrada(data);
       this.props.loadEntrada(data);
-    }  
+    }
   }
   handleError = err => {
     console.error(err)

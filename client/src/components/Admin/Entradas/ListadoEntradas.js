@@ -3,7 +3,7 @@ import { Component } from "react";
 import { Redirect } from "react-router";
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
-import * as actions from "../../../actions";
+import * as actions from "../../../actions/entradasActions.js";
 
 import M from "materialize-css";
 import Waiting from "../../Waiting"
@@ -16,10 +16,10 @@ const ItemEntrada = (props) => {
     <div className="col s12">
       <div className="col s10">
         <blockquote style={{borderLeft: "solid #000000"}}>
-          <h5>
+          <h6>
               <p>{props.entrada._usuario.email}&nbsp;&nbsp;</p>
               <p>{fecha_formateada.dia}&nbsp;&nbsp;{fecha_formateada.hora}&nbsp;&nbsp;</p>
-          </h5>
+          </h6>
         </blockquote>
       </div>
         <div className="col s2">

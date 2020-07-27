@@ -2,9 +2,9 @@ const passport = require("passport");
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const LocalStrategy = require("passport-local").Strategy;
 const bcrypt = require("bcrypt");
-const keys = require("../config/keys"); //dos directorios arriba
+const keys = require("../config/keys");
 const mongoose = require("mongoose");
-const User = mongoose.model("users"); //si solo pongo un parametro lo accedo
+const User = mongoose.model("users"); 
 
 passport.serializeUser((user, done) => {
   done(null, user.id);
@@ -12,8 +12,7 @@ passport.serializeUser((user, done) => {
 
 passport.deserializeUser((id, done) => {
   User.findById(id).then((user) => {
-    console.log("DESERIALISAO",user);
-    done(null, user); //la funcion done le pone a la request en re.user lo que le ponga aqui
+    done(null, user); //Se renueva cada vez que se verifica la identidad
   });
 });
 
@@ -23,12 +22,12 @@ passport.use(
       clientID: keys.googleClientID,
       clientSecret: keys.googleClientSecret,
       callbackURL: "/auth/google/callback",
-      proxy: true, //o poner la ruta entera
+      proxy: true, //Heroku utiliza proxy
     },
     async (accessToken, refreshToken, profile, done) => {
-      const existingUser = await User.findOne({ googleId: profile.id });
-      if (existingUser) {
-        done(null, existingUser);
+      const foundUser = await User.findOne({ googleId: profile.id });
+      if (foundUser) {
+        done(null, foundUser);
       } else {
         const createdUser = await new User({
           googleId: profile.id,
@@ -38,7 +37,7 @@ passport.use(
       }
     }
   )
-); //Puedes usar google
+);
 
 passport.use(
   new LocalStrategy(async function (username, password, done) {

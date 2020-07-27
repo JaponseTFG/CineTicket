@@ -12,7 +12,7 @@ class Footer extends Component {
             <div className="row">
               <div className="col l6 s12" >
                 <h5 className="white-text">CineTicket</h5>
-                <p className="grey-text text-lighten-4">Aplicacción web de venta online de entradas. Trabajo final de grado GIM UV 2020.</p>
+                <p className="grey-text text-lighten-4">Aplicación web de venta online de entradas. Trabajo final de grado GIM UV 2020.</p>
               </div>
               <div className="col l4 offset-l2 s12">
                 <h5 className="white-text">Información</h5>

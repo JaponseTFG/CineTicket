@@ -1,17 +1,17 @@
+
+//Auth
 export const GET_AUTH             = 'get_auth';
 export const FETCH_PAYMENT        = 'fetch_payment';
 export const REDIRECT             = 'redirect';
 
 
 //Admin entradas
-
 export const LOAD_OPCIONES     = 'load_opciones';
 export const CHANGE_SELECCION  = 'change_seleccion';
 export const LOAD_ENTRADAS     = 'load_entradas';
 export const DELETE_ENTRADA    = 'delete_entrada';
 
 //Admin peliculas
-
 export const GOTO_EDIT_PELICULA     = 'goto_edit_pelicula';
 export const GOTO_PELICULAS_LIST    = 'goto_peliculas_list';
 export const DELETE_PELICULA        = 'delete_pelicula';
@@ -20,7 +20,6 @@ export const ACTUALIZA_PELICULA     = 'actualiza_pelicula';
 export const LOAD_LISTA_PELICULAS   = 'load_lista_peliculas';
 
 //Admin salas
-
 export const LOAD_LISTA_SALAS  = 'load_lista_salas';
 export const LOAD_SALA         = 'load_sala';
 export const ACTUALIZA_SALA    = 'actualiza_sala';
@@ -30,7 +29,6 @@ export const DELETE_SALA       = 'delete_sala';
 export const GOTO_LISTA_SALAS  = 'goto_lista_salas';
 
 //Admin sesiones
-
 export const LOAD_LISTA_SESIONES  = 'load_lista_sesiones';
 export const LOAD_SESION          = 'load_sesion';
 export const ACTUALIZA_SESION     = 'actualiza_sesion';
